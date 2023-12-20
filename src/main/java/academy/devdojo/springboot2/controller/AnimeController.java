@@ -5,6 +5,7 @@ import academy.devdojo.springboot2.service.AnimeService;
 import academy.devdojo.springboot2.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,23 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping
-    public ResponseEntity<List<Anime>> list(){
+    public ResponseEntity<List<Anime>> list() {
         log.info(dateUtil.formatLocalDateTimeToDataBaseStyle(LocalDateTime.now()));
         return new ResponseEntity<>(animeService.listAll(), HttpStatus.OK);
     }
+
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Anime> findById(@PathVariable long id){
+    public ResponseEntity<Anime> findById(@PathVariable long id) {
         return ResponseEntity.ok(animeService.findById(id));
+    }
+    @GetMapping(path = "/name/{name}")
+    public ResponseEntity<Anime> findByName(@PathVariable String name){
+        return ResponseEntity.ok(animeService.findByName(name));
+    }
+
+    @PostMapping
+    public ResponseEntity<Anime> save(@RequestBody Anime anime) {
+        return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
+        //return ResponseEntity.ok(animeService.save(anime));
     }
 }
