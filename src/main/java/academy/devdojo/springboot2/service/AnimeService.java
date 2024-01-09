@@ -2,6 +2,7 @@ package academy.devdojo.springboot2.service;
 
 import academy.devdojo.springboot2.Repository.AnimeRepository;
 import academy.devdojo.springboot2.domain.Anime;
+import academy.devdojo.springboot2.mapper.AnimeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,9 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @RequiredArgsConstructor
 public class AnimeService {
-    private final AnimeRepository animeRepository;
-    private static List<Anime> animes;
-    static{
-        animes = new ArrayList<>(List.of(new Anime(1L, "Bakugan"), new Anime(15L, "Boku no Hero")));
-    }
+
+   private final AnimeRepository animeRepository;
+   private AnimeMapper mapper = AnimeMapper.INSTANCE;
     public List<Anime> listAll() {
         return animeRepository.findAll();
     }
@@ -32,7 +31,7 @@ public class AnimeService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found"));
     }
     public Anime save(AnimePostRequestBody animePostRequestBody){
-        return animeRepository.save(Anime.builder().name(animePostRequestBody.getName()).build());
+        return animeRepository.save((mapper.toAnime(animePostRequestBody)));
     }
     public void remove(long id){
         animeRepository.delete(findById(id));
@@ -40,10 +39,8 @@ public class AnimeService {
 
     public void replace(AnimePutRequestBody animePutRequestBody){
         Anime savedAnime = findById(animePutRequestBody.getId());
-        Anime anime = Anime.builder()
-                .id(savedAnime.getId())
-                .name(animePutRequestBody.getName())
-                .build();
+        Anime anime = mapper.toAnime(animePutRequestBody);
+        anime.setId(savedAnime.getId());
 
         animeRepository.save(anime);
 
