@@ -4,6 +4,7 @@ import academy.devdojo.springboot2.domain.Anime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -38,4 +39,13 @@ public class AnimeService {
         animes.add(anime);
         return anime;
     }
+    public void remove(long id){
+        animes.remove((findById(id)));
+    }
+
+    public void replace(Anime anime){
+        remove(anime.getId());
+        animes.add(anime);
+    }
+
 }
