@@ -9,6 +9,8 @@ import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import requests.AnimePostRequestBody;
+import requests.AnimePutRequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,13 +36,8 @@ public class AnimeController {
     public ResponseEntity<Anime> findById(@PathVariable long id) {
         return ResponseEntity.ok(animeService.findById(id));
     }
-    @GetMapping(path = "/name/{name}")
-    public ResponseEntity<Anime> findByName(@PathVariable String name){
-        return ResponseEntity.ok(animeService.findByName(name));
-    }
-
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody Anime anime) {
+    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody anime) {
         return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
         //return ResponseEntity.ok(animeService.save(anime));
     }
@@ -51,8 +48,8 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody Anime anime){
-        animeService.replace(anime);
+    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody){
+        animeService.replace(animePutRequestBody);
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
